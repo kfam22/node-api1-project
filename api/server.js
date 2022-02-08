@@ -29,6 +29,24 @@ server.get('/api/users', (req, res)=>{
 // POST - /api/users - Creates a user using the information sent inside the `request body`.  
 
 // GET - /api/users/:id - Returns the user object with the specified `id`
+server.get('/api/users/:id', (req, res)=>{
+    let { id } = req.params;
+    user.findById(id)
+    .then(user =>{
+        console.log(user)
+        if(user == null){
+            res.status(404).json({ message: 'The user with the specified ID does not exist'});
+        } else{
+            res.json(user)
+        }
+    })
+    .catch(err =>{
+        res.status(500).json({
+            message: 'The user information could not be retrieved',
+            error: err.message
+        })
+    })
+})
 
 // DELETE - /api/users/:id  - Removes the user with the specified `id` and returns the deleted user. 
 

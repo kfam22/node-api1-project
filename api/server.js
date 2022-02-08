@@ -27,13 +27,28 @@ server.get('/api/users', (req, res)=>{
 })
 
 // POST - /api/users - Creates a user using the information sent inside the `request body`.  
+server.post('/api/users', (req, res)=>{
+    let body = req.body;
+    if(!body.name){
+        res.status(400).json({ message: 'Please provide name and bio for the user' })
+    } else if(!body.bio){
+        res.status(400).json({ message: 'Please provide name and bio for the user' })
+    } else{
+        user.insert(body)
+        .then(user=>{
+            res.status(201).json(user)
+        })
+        .catch(err =>{
+            res.status(500).json({ message: 'There was an error while saving the user to the database', error: err.message})
+        })
+    }
+})
 
 // GET - /api/users/:id - Returns the user object with the specified `id`
 server.get('/api/users/:id', (req, res)=>{
     let { id } = req.params;
     user.findById(id)
     .then(user =>{
-        console.log(user)
         if(user == null){
             res.status(404).json({ message: 'The user with the specified ID does not exist'});
         } else{
